@@ -41,7 +41,10 @@ print("Renaming RobloxPlayer to OldRobloxPlayer")
 os.rename(robloxPlayer, oldRobloxPlayer)
 
 print("Moving the Server Tracker to Roblox and making a fake RobloxPlayer executable")
-shutil.copy(serverTracker, robloxPlayer)
+with open(robloxPlayer, "w") as rblxfile:
+    with open(serverTracker, "r") as trackerfile:
+        contentsToWrite = f"#!{sys.executable}\n{trackerfile.read()}" # Add shebang
+        rblxfile.write(contentsToWrite)
 
 print("Giving perssions to fake RobloxPlayer executable")
 os.chmod(robloxPlayer, 0o755) # read write execute
