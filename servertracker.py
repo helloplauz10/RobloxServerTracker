@@ -106,14 +106,11 @@ os.chdir("/Applications/Roblox.app/Contents/MacOS")
 try:
     with subprocess.Popen(["/Applications/Roblox.app/Contents/MacOS/./OldRobloxPlayer"], stdout=subprocess.PIPE, stderr=subprocess.PIPE) as rblxproc:
         logger.info(f"Roblox PID {rblxproc.pid}")
-        while not failsafe:
+        while rblxproc.poll() is None:
             capturedLine = rblxproc.stdout.readline().decode(errors="ignore")
-            if not isRobloxRunning(capturedLine) or rblxproc.poll():
-                logger.info("Roblox is not running, exiting.")
-                rblxproc.kill()
-                sys.exit()
-            #print(rblxproc.poll(), end="\r")
             executeString(capturedLine, logger)
+        logger.info("Roblox is not running anymore, exiting")
+        sys.exit()
 except KeyboardInterrupt:
     # If ran manually
     logger.info("Quitting")
